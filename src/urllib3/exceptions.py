@@ -123,6 +123,12 @@ class ReadTimeoutError(TimeoutError, RequestError):
     pass
 
 
+class WriteTimeoutError(TimeoutError, RequestError):
+    """Raised when a socket timeout occurs while sending data to a server"""
+
+    pass
+
+
 # This timeout error does not have a URL attached and needs to inherit from the
 # base HTTPError
 class ConnectTimeoutError(TimeoutError):

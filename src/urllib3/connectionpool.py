@@ -30,6 +30,7 @@ from .exceptions import (
     ProtocolError,
     ProxyError,
     ReadTimeoutError,
+    WriteTimeoutError,
     SSLError,
     TimeoutError,
 )
@@ -409,6 +410,12 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
                 errno.EPROTOTYPE,
             }:
                 raise
+        except SocketTimeout as e:
+            # fixme: can a SocketTimeout be raised here for read ops as well? (eg. during SSL handshake)
+            # fixme: python 2 probably raises SSLError here instead of SocketError
+            raise WriteTimeoutError(
+                self, url, "Write timed out. (write timeout=%s)" % conn.timeout
+            )
 
         # Reset the timeout for the recv() on the socket
         read_timeout = timeout_obj.read_timeout
